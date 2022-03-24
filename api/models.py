@@ -20,7 +20,7 @@ class Passenger(models.Model):
 
 class Reservationn(models.Model):
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE)
-    passenger = models.OneToOneField(Passenger, on_delete=models.CASCADE)
+    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.bus.bus_number
