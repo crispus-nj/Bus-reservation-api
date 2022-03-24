@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from rest_framework import viewsets, status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -9,10 +8,27 @@ from .serializers import BusSerializers, PassengerSerializers, ReservationSerial
 
 @api_view(['POST'])
 def find_bus(request):
-    print(request.data)
     bus = Bus.objects.filter(departure_city = request.data['departure_city'], arrival_city=request.data['arrival_city'])
     serializer = BusSerializers(bus, many=True)
     return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
+
+
+@api_view(['POST'])
+def send_reservation(request):
+    bus = Bus.objects.get(id = request.data['id'])
+
+    passenger = Passenger()
+    passenger.username = request.data['username']
+    passenger.email = request.data['email']
+    passenger.phone_number = request.data['phone_number']
+    passenger.save()
+
+    reservation = Reservationn()
+    reservation.bus = bus
+    reservation.passenger = passenger
+    reservation.save()
+
+    return Response(reservation.data,status=status.HTTP_201_CREATED)
 
 
 class BusViewSet(viewsets.ModelViewSet):
